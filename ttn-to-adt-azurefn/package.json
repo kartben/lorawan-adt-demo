@@ -1,0 +1,14 @@
+{
+  "name": "ttn-to-adt-azurefn",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@azure/digital-twins-core": "^1.0.3",
+    "@azure/identity": "^1.2.2"
+  },
+  "devDependencies": {}
+}
