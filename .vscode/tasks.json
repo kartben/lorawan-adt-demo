@@ -6,18 +6,27 @@
 			"command": "host start",
 			"problemMatcher": "$func-node-watch",
 			"isBackground": true,
-			"dependsOn": "npm install"
+			"dependsOn": "npm install",
+			"options": {
+				"cwd": "${workspaceFolder}/ttn-to-adt-azurefn"
+			}
 		},
 		{
 			"type": "shell",
 			"label": "npm install",
-			"command": "npm install"
+			"command": "npm install",
+			"options": {
+				"cwd": "${workspaceFolder}/ttn-to-adt-azurefn"
+			}
 		},
 		{
 			"type": "shell",
 			"label": "npm prune",
 			"command": "npm prune --production",
-			"problemMatcher": []
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}/ttn-to-adt-azurefn"
+			}
 		}
 	]
 }
