@@ -1,0 +1,62 @@
+[
+  {
+    "@id": "dtmi:com:dragino:lht65;2",
+    "@type": "Interface",
+    "displayName": {
+      "en": "Dragino LHT65"
+    },
+    "contents": [
+      {
+        "@type": [
+          "Property",
+          "Voltage"
+        ],
+        "name": "batteryLevel",
+        "schema": "double",
+        "displayName": "Battery level",
+        "description": "Battery level of the LHT65",
+        "unit": "volt",
+        "writable": true
+      },
+      {
+        "@type": [
+          "Property",
+          "Temperature"
+        ],
+        "name": "builtInTemperature",
+        "schema": "double",
+        "displayName": "Temperature (built-in sensor)",
+        "description": "Battery level of the LHT65",
+        "unit": "degreeCelsius",
+        "writable": true
+      },
+      {
+        "@type": [
+          "Property",
+          "RelativeHumidity"
+        ],
+        "name": "builtInHumidity",
+        "schema": "double",
+        "displayName": "Humidity (built-in sensor)",
+        "description": "Battery level of the LHT65",
+        "unit": "percent",
+        "writable": true
+      },
+      {
+        "@type": [
+          "Property",
+          "Temperature"
+        ],
+        "name": "temperature",
+        "schema": "double",
+        "displayName": "Temperature (external sensor)",
+        "description": "Temperature as measure by the external DS18B20",
+        "unit": "degreeCelsius",
+        "writable": true
+      }
+    ],  
+    "@context": [
+      "dtmi:dtdl:context;2"
+    ]
+  }
+]
