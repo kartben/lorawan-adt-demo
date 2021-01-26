@@ -3,17 +3,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
 [![Twitter: kartben](https://img.shields.io/twitter/follow/kartben.svg?style=social)](https://twitter.com/kartben)
 
-This repository contains instructions and resources for building a demonstration system showcasing integration of LoRaWAN sensors into a digital twin solution.
+This repository contains instructions and resources for helping you setup a complete end-to-end solution showcasing integration of LoRaWAN sensors into a digital twin solution.
 
-TBC
+It relies on The Things Stack/The Things Network for the LoRaWAN connectivity aspect, but it can easily be adapted to support other LoRaWAN network server, or any other sensor data source really.
 
-## Install
+## Pre-requisites
 
-TBC
+* Blender 2.91 (or later)  — [Blender](https://www.blender.org/) is a free and open-source 3D modeling and rendering tool. You can [download it](https://www.blender.org/download/) from the project website.
 
-## Usage
+* An Azure Subscription — as you will be deploying several services in the Microsoft Azure cloud, you will need an Azure subscription. You can register for a free account [here](http://azure.microsoft.com/free).
 
-TBC
+* (optionally) Visual Studio Code — while not mandatory, having a local install of Visual Studio Code will be useful.
+
+## Behind the scenes
+
 
 ## Author
 
