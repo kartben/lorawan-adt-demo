@@ -9,7 +9,6 @@
       "displayName": "contains",
       "description": "Rooms contained in the building",
       "target": "dtmi:example:Room;1"
-
     }    
   ],
   "@context": "dtmi:dtdl:context;2"
