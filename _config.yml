@@ -1,0 +1,11 @@
+theme: jekyll-theme-hacker
+title: Integrating LoRaWAN sensors in your Digital Twins environment
+description: End-to-end tutorial on how to create digital twins of your LoRaWAN sensors and visualize them in a 3D environment.
+twitter:
+  username: kartben
+  card: summary_large_image
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: assets/twitter-card.png

@@ -3,11 +3,12 @@ from azure.core.exceptions import HttpResponseError
 from azure.digitaltwins.core import DigitalTwinsClient
 import bpy
 
-credential = DefaultAzureCredential()
-url = 'https://adtkartben.api.eus2.digitaltwins.azure.net'
-buildingId = 'benjamin-house' 
+ADT_ENDPOINT_URI = '<REPLACE_WITH_YOUR_ADT_ENDPOINT_URI>'
+BUILDING_TWIN_ID = '<REPLACE_WITH_YOUR_BUILDING_TWIN_ID' 
 
-service_client = DigitalTwinsClient(url, credential, logging_enable=False)
+credentials = DefaultAzureCredential()
+
+service_client = DigitalTwinsClient(ADT_ENDPOINT_URI, credentials, logging_enable=False)
 
 # List the IDs + temperature of the sensor for all rooms in building `buildingId` that contain a sensor of type Dragino LHT65
 query_expression = """SELECT Room.$dtId, Sensor.temperature 
@@ -18,7 +19,7 @@ query_expression = """SELECT Room.$dtId, Sensor.temperature
                       AND IS_OF_MODEL(Room, 'dtmi:example:Room;1')
                       AND IS_PRIMITIVE(Sensor.temperature) 
                       AND IS_PRIMITIVE(Room.$dtId) 
-                      AND Building.$dtId = '%s'""" % buildingId
+                      AND Building.$dtId = '%s'""" % BUILDING_TWIN_ID
 
 def update_3d_model_callback():
     # clear all labels
@@ -34,4 +35,4 @@ def update_3d_model_callback():
             bpy.data.objects[roomLabel].data.body = str(roomTemperature)
     return 5 # call function every 5s
 
-bpy.app.timers.register(update_3d_model_callback)
+bpy.app.timers.register(update_3d_model_callback)   

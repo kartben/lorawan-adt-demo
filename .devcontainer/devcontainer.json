@@ -1,7 +1,8 @@
 {
     "extensions": [
-        "ms-azuretools.vscode-azurefunctions",
-        "ms-vscode.js-debug",
-        "vsciot-vscode.vscode-dtdl"
-    ]
+		"ms-azuretools.vscode-azurefunctions",
+		"ms-vscode.js-debug",
+		"vsciot-vscode.vscode-dtdl",
+		"ms-vscode.azure-account"
+	]
 }
