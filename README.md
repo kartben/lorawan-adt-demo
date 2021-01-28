@@ -97,7 +97,51 @@ The steps below are assuming that you've already gone through the steps needed t
 
     ![](assets/dragino-lht-65-sticker.png)
 
-1. Just like any other LoRaWAN sensor, the LHT65 sensors only have 
+1. Finally, we need to configure the payload formatter in order to unpack the binary/opaque payload that the temperature sensors are sending as uplink message. 
+
+    Just head over to the **Payload Formatters / Uplink** section of your application in The Things Stack console, and use the following snippet as the Javascript formatter:
+
+    ```javascript
+    function decodeUplink(input) {
+        var data = {};
+        var bytes = input.bytes;
+        
+        switch (input.fPort) {
+        case 2:
+            data = {
+            $metadata: {
+                $model: 'dtmi:com:dragino:lht65;2'
+            },
+            
+            //Battery,units:V
+            batteryLevel: ((bytes[0]<<8 | bytes[1]) & 0x3FFF)/1000,
+            
+            //SHT20,temperature,units:C
+            builtInTemperature:((bytes[2]<<24>>16 | bytes[3])/100),
+            
+            //SHT20,Humidity,units:%
+            builtInHumidity:((bytes[4]<<8 | bytes[5])/10),
+            
+            //DS18B20,temperature,units:C
+            temperature:
+            {
+                "1":((bytes[7]<<24>>16 | bytes[8])/100),
+            }[bytes[6]&0xFF],       
+            
+            }
+        break;
+        }  
+        
+        return {
+        data: data
+        };
+    }
+        
+    ```
+
+1. Make sure your sensor(s) are out of the deep sleep state they're in if you just got them by pressing the "ACT" button for 5+ seconds. Your sensors should now start sending uplink messages every 20 minutes, and your application logs should confirm that payloads are being properly decoded.
+
+    ![](assets/thethingsstack-console-app-logs.png)
 
 
 Note: If you do not own a Dragino LHT-65 temperature sensor, or even an actual gateway, we still have you covered. The Things Stack allow you to simulate uplink messages, effectively allowing you to pretend that an actual device is sending data.
