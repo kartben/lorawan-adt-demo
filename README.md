@@ -4,6 +4,7 @@ Note: the instructions assume you are using [The Things Stack](https://thethings
 
 ---
 
+- [Introduction](#introduction)
 - [Pre-requisites](#pre-requisites)
 - [Structure of the repository](#structure-of-the-repository)
 - [Steps](#steps)
@@ -16,6 +17,12 @@ Note: the instructions assume you are using [The Things Stack](https://thethings
 - [Going further](#going-further)
 
 ---
+
+## Introduction
+
+In this tutorial, we will be setting up an end-to-end IoT solution for monitoring and visualizing in real-time the condition of a building equipped with wireless, low-power, LoRaWAN sensors. 
+
+We will be connecting off-the-shelf temperature/humidity sensors to a private LoRaWAN network server hosted on Microsoft Azure, and interfaced with an Azure Digital Twins environment. Using IoT Plug-and-Play, telemetry being sent by the sensors will automatically be reflected in their *digital twin* counterpart, and those twins will be used to drive a real-time 3D representation of the building in Blender.
 
 ## Pre-requisites
 
@@ -143,10 +150,11 @@ The steps below are assuming that you've already gone through the steps needed t
 
     ![](assets/thethingsstack-console-app-logs.png)
 
+---
 
-Note: If you do not own a Dragino LHT-65 temperature sensor, or even an actual gateway, we still have you covered. The Things Stack allow you to simulate uplink messages, effectively allowing you to pretend that an actual device is sending data.
+**Note**: If you do not own a Dragino LHT-65 temperature sensor, or even an actual gateway, we still have you covered! The Things Stack allows you to simulate uplink messages, effectively allowing you to pretend that an actual device is sending data.
 
-Head over to the "Messaging" section of your end node in the Things Stack Console, and use any of the following payload examples (hex-encoded) to simulate uplink traffic:
+Just create a random device in your application (frequency plan, activation mode, etc. don't really matter in this case), Then head over to the "**Messaging**" section of the device, and use any of the following payload examples (hex-encoded) to simulate uplink traffic:
 
 ```default
 cb f2 07 f5 01 c7 01 07 bd 7f ff
@@ -159,6 +167,10 @@ cb f2 07 f8 01 a1 01 07 bd 7f ff
 ```
 
 This one corresponds to a battery level of 3.058V, a humidity level of 41.7%, temperature of 20.4℃, and temperature as reported by the external sensor of 19.81℃.
+
+---
+
+Now that our sensors are connected and that intelligible sensor data is flowing through our application server, we can setup the Azure Digital Twins instance where we will be describing how our sensors fit into a larger picture, one where we will be manipulating the *digital twin* of an entire building.
 
 ### Setting up an Azure Digital Twins environment
 
