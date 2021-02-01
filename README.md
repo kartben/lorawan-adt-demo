@@ -174,7 +174,9 @@ Now that our sensors are connected and that intelligible sensor data is flowing 
 
 ### Setting up an Azure Digital Twins environment
 
-1. Follow the [install instructions](https://docs.microsoft.com/en-us/azure/digital-twins/quickstart-adt-explorer#set-up-azure-digital-twins-and-adt-explorer) from the Azure Digital Twins Documentation in order to **setup a new Azure Digital Twins instance** in your Azure subscription, and to configure the ADT Explorer tool to start interacting with it.
+1. Follow the [install instructions](https://docs.microsoft.com/en-us/azure/digital-twins/quickstart-adt-explorer#set-up-azure-digital-twins-and-adt-explorer) from the Azure Digital Twins Documentation in order to **setup a new Azure Digital Twins instance** in your Azure subscription, and to configure the ADT Explorer tool to start interacting with it. 
+
+    **Note**: In order to centralize all the Azure resources used for this tutorial, you will want to create the Azure Digital Twins instance in the same resource group as the one used for deploying The Things Stack earlier.
 
     Once your ADT instance and ADT Explorer are fully setup, you should be able to just open your favorite web browser at [http://localhost:3000](http://localhost:3000), and start using the Explorer. The first time you open it, it will ask you for the URL of your ADT endpoint. 
 
@@ -182,11 +184,11 @@ Now that our sensors are connected and that intelligible sensor data is flowing 
 
     ![](assets/adt-explorer-home.png)
 
-2. Use the ADT Explorer user interface (![](assets/adt-model-import-icon.png) icon in the Model View pane) to import the three JSON files contained in the `models/` folder (`building.json`, `room.json`, `Dragino LHT65.json`) into your ADT instance.
+1. Use the ADT Explorer user interface (![](assets/adt-model-import-icon.png) icon in the Model View pane) to import the three JSON files contained in the `models/` folder (`building.json`, `room.json`, `Dragino LHT65.json`) into your ADT instance.
 
     Optionally, you can also associate the PNG icon files found in the very same folder to each entity (![](assets/adt-add-icon-icon.png) icon).
 
-3. The next step consists in **creating the twin graph describing our smart building** environment. For each of the following entities, use the ![](assets/adt-new-twin-icon.png) icon to create new entities:
+1. The next step consists in **creating the twin graph describing our smart building** environment. For each of the following entities, use the ![](assets/adt-new-twin-icon.png) icon to create new entities:
 
     - `building001`, of type Building ;
     - `bedroom001`, of type Room ;
@@ -197,7 +199,7 @@ Now that our sensors are connected and that intelligible sensor data is flowing 
 
     __Note__: We are deliberately not creating the twins for our sensors manually, as they will be automatically be inserted in the graph once we have completed the integration between the LoRaWAN Network Server and ADT, later in the tutorial. 
 
-4. Finally, we need to **attach the various rooms to the building we've created**. Select `building001` in the graph and, while maintaining the SHIFT (⇧) key pressed, select `bedroom001` ; you can now use the ![](assets/adt-add-relationship-icon.png) to create a `contains` relationship between the two twins.
+1. Finally, we need to **attach the various rooms to the building we've created**. Select `building001` in the graph and, while maintaining the SHIFT (⇧) key pressed, select `bedroom001` ; you can now use the ![](assets/adt-add-relationship-icon.png) to create a `contains` relationship between the two twins.
 
     Repeat this step for all the other rooms, in order to add them all to `building001`. Your twin graph should now look like the following.
 
@@ -207,11 +209,57 @@ Now that our sensors are connected and that intelligible sensor data is flowing 
 
 At this point, we have actual sensors connected to a LoRaWAN network and reporting temperature, humidity, and battery level at regular intervals. We also have a twin graph modeling, in a very simplified way, a building. 
 
-In this step we are going to bridge the LoRaWAN application server to our Azure Digital Twins instance so that our sensors, together with the data they are reporting, appear in the twin graph.
+We now need to **bridge the LoRaWAN application server to our Azure Digital Twins instance** so that our sensors, together with the data they are reporting, appear in the twin graph. Since the payload formatter that we have configured for our application in The Things Stack console is already taking care of not only decoding the uplink binary payload into meaningful sensor values, but also setting a DTDL Model Identifier (DTMI), it shouldn't be too difficult to update the twin graph each time an uplink hits the application server. 
+
+Let's deploy a **serverless function** that will be called as a webhook from the Things Stack application server for each uplink.,It will take care of creating/updating the digital twin corresponding to the sensor associated to the uplink. 
 
 ![](assets/tts-to-adt-via-azure-functions-webhook.png)
 
-1. TODO explain how to deploy (and configure) the Azure Function
+1. Follow the [official instructions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-app-portal#create-a-function-app) to deploy a Function App from the Azure Portal.
+
+   **Note**: If you are familiar with the VS Code extensions for Azure, feel free to do the following from VS Code rather than using the Azure Portal.
+
+   - **Subscription**: use the same subscription you used for the previous steps ;
+   - **Resource Group**: use the same resource group you used for the previous steps ;
+   - **Function App Name**: a name of your choice for the Function App instance ;
+   - **Publish**: select "Code" ;
+   - **Runtime** stack: Node.JS ;
+   - **Version**: 14 LTS ;
+   - **Region**: use the same region you used for the previous steps.
+
+    For "Hosting", stick to the default options, i.e. create a new storage account, use Windows as the Operating System, and setup a Consumption plan.
+
+1. Go to the "Settings / Configuration" section of the Function App, and give it a System Assigned Managed Identity: setting the "Status" toggle to "On", and press "Save".
+
+    After confirming your choice, wait a few seconds until the page refreshes itself and show the "Object ID", i.e the unique identifier that will allow to grant the serverless function access to the Azure Digital Twins instance.
+
+1. Without leaving the active page, you can directly click on "Azure role assignments". There, add the following role assignment ("Add Role Assignment (Preview)"):
+
+    - **Scope**: Subscription ;
+    - **Subscription**: the subscription you've been using thus far ;
+    - **Role**: "Azure Digital Twins Data Owner".
+
+1. Go to the "Settings / Identity" section of the Function App, and add ("New Application Setting") the following two application settings:
+ 
+    - Name: `WEBSITE_RUN_FROM_PACKAGE` // Value: `https://raw.githubusercontent.com/kartben/lorawan-adt-demo/master/ttn-to-adt-azurefn/package.zip`
+
+    - Name: `AZURE_DIGITALTWINS_URL` // Value: The URL of your Azure Digital Twins Endpoint, ex. `https://myadtinstance.api.eus2.digitaltwins.azure.net`
+
+    Hit "Save". 
+
+1. After a brief moment, go to the "Functions / Function" section of the Function App. A function called "`ttn-webhook`" should now be visible, as the Function App has downloaded the [`package.zip`](ttn-to-adt-azurefn/package.zip). Click on it, and hit the "Get Function URL" button in order to get the URL of the endpoint where your newly deployed serverless function can be accessed. It should look similar to `https://myfunctionapp.azurewebsites.net/api/ttn-webhook?code=Mmlyb2lwbHdlZmxrc2RqMjA5amtsZnNkZGtzbGo=`
+
+1. Finally, in the "Integrations / Webhook" section of your application in The Things Stack console, add a new webhook:
+
+    - Select the "Custom Webhook" template ;
+    - **Webhook ID**: a unique ID of your choice ;
+    - **Webhook format**: JSON ;
+    - **Base URL**: the URL of your serverless function, as per the previous step ;
+    - **Enabled messages**:  select the "Uplink message" checkbox.
+
+    Confirm the creation of the webhook by clicking "Add webhook".
+
+From now on, each time an uplink message is sent by an end node provisioned in this application, the webhook will be called. If you're curious, you've already checked by now [what it is actually doing](ttn-to-adt-azurefn/ttn-webhook/index.js#): given a sensor ID, a decoded payload, and a digital twin model ID (DTMI), it performs an "upsert" in the ADT instance available at `AZURE_DIGITALTWINS_URL`. And voila!
 
 ### Real-time 3D visualization using Blender & Azure Digital Twins SDKs
 

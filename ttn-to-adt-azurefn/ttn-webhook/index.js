@@ -9,7 +9,7 @@ module.exports = async function (context, req) {
     const url = process.env.AZURE_DIGITALTWINS_URL;
     
     const credential = new DefaultAzureCredential();
-    // DefaultAzureCredential will automatigically work in an Azure Function context if the Azure Function has
+    // DefaultAzureCredential will automagically work in an Azure Function context if the Azure Function has
     // a system-assigned managed identity and has "Azure Digital Twins Data Owner" permission on the ADT instance
     const serviceClient = new DigitalTwinsClient(url, credential);
     
