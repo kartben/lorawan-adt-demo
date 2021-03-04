@@ -1,12 +1,12 @@
 {
-  "@id": "dtmi:example:Room;1",
+  "@id": "dtmi:example:Room;7",
   "@type": "Interface",
   "displayName": "Room",
   "contents": [
     {
       "@type": "Property",
-      "name": "Temperature",
-      "schema": "double"
+      "name": "Name",
+      "schema": "string"
     },
     {
       "@type": "Property",
@@ -15,9 +15,10 @@
     },
     {
       "@type": "Relationship",
-      "name": "contains",
-      "displayName": "contains",
-      "description": "This relationship can be used to associated sensors, or any other entity, to a room"
+      "name": "sensors",
+      "displayName": "contains sensor",
+      "target": "dtmi:contoso:Sensor;1",
+      "description": "This relationship can be used to associate sensors to a room"
     }    
   ],
   "@context": "dtmi:dtdl:context;2"

@@ -1,23 +1,12 @@
 [
   {
-    "@id": "dtmi:com:dragino:lht65;2",
+    "@id": "dtmi:com:dragino:lht65;3",
     "@type": "Interface",
+    "extends": ["dtmi:contoso:Sensor;1"],
     "displayName": {
       "en": "Dragino LHT65"
     },
     "contents": [
-      {
-        "@type": [
-          "Property",
-          "Voltage"
-        ],
-        "name": "batteryLevel",
-        "schema": "double",
-        "displayName": "Battery level",
-        "description": "Battery level of the LHT65",
-        "unit": "volt",
-        "writable": true
-      },
       {
         "@type": [
           "Property",
@@ -26,7 +15,7 @@
         "name": "builtInTemperature",
         "schema": "double",
         "displayName": "Temperature (built-in sensor)",
-        "description": "Battery level of the LHT65",
+        "description": "Temperature of the LHT65",
         "unit": "degreeCelsius",
         "writable": true
       },
@@ -38,7 +27,7 @@
         "name": "builtInHumidity",
         "schema": "double",
         "displayName": "Humidity (built-in sensor)",
-        "description": "Battery level of the LHT65",
+        "description": "Humidity of the LHT65",
         "unit": "percent",
         "writable": true
       },

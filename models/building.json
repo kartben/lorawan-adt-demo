@@ -1,5 +1,5 @@
 {
-  "@id": "dtmi:example:Building;1",
+  "@id": "dtmi:example:Building;7",
   "@type": "Interface",
   "displayName": "Building",
   "contents": [
@@ -8,7 +8,7 @@
       "name": "contains",
       "displayName": "contains",
       "description": "Rooms contained in the building",
-      "target": "dtmi:example:Room;1"
+      "target": "dtmi:example:Room;7"
     }    
   ],
   "@context": "dtmi:dtdl:context;2"
