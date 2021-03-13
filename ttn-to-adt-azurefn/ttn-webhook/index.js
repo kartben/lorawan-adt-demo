@@ -2,8 +2,17 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const { DigitalTwinsClient } = require("@azure/digital-twins-core");
 
 module.exports = async function (context, req) {
-    const digitalTwinId = req.body.end_device_ids.device_id;
-    const decodedPayload = req.body.uplink_message.decoded_payload;
+    var digitalTwinId;
+    var decodedPayload;
+    
+    // - UPDATE VARS BASED ON TTN V2/V3 UPLINK PAYLOAD
+    if (req.body.dev_id && req.body.payload_fields){
+        digitalTwinId = req.body.dev_id;
+        decodedPayload = req.body.payload_fields;
+    }else{
+        digitalTwinId = req.body.end_device_ids.device_id;
+        decodedPayload = req.body.uplink_message.decoded_payload;
+    }
     
     // - AZURE_DIGITALTWINS_URL: The tenant ID in Azure Active Directory
     const url = process.env.AZURE_DIGITALTWINS_URL;
